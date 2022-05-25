@@ -11,10 +11,11 @@ import (
 func TestMakeOptions(t *testing.T) {
 	isTempl := false
 	dryRun := true
+	appendMod := false
 	types := "foo,bar"
 	mapping := "ID=_id;Bar=notbar"
 	args := []string{"json,yaml", "foo.go"}
-	o, err := makeOptions(types, mapping, isTempl, dryRun, args)
+	o, err := makeOptions(types, mapping, isTempl, dryRun, appendMod, args)
 	if err != nil {
 		t.Fatalf("Unexpected error from makeOptions: %s", err)
 	}
@@ -37,7 +38,7 @@ func TestMakeOptionsTemplate(t *testing.T) {
 	types := "foo,bar"
 	mapping := "ID=_id;Bar=notbar"
 	args := []string{`json:"{{.F}}"`}
-	o, err := makeOptions(types, mapping, isTempl, dryRun, args)
+	o, err := makeOptions(types, mapping, isTempl, dryRun, false, args)
 	if err != nil {
 		t.Fatalf("Unexpected error from makeOptions: %s", err)
 	}

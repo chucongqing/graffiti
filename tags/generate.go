@@ -30,6 +30,8 @@ type Options struct {
 	Types []string
 	// DryRun indicates whether we should simply write to StdOut rather than writing to the files.
 	DryRun bool
+
+	AppendMod bool
 }
 
 // Generate generates tags according to the given options.
@@ -136,7 +138,13 @@ func (v *visitor) Visit(n ast.Node) ast.Visitor {
 					v.err = err
 					return nil
 				}
-				f.Tag.Value = val
+				if v.Options.AppendMod {
+					originTag := strings.ReplaceAll(f.Tag.Value, "`", "")
+					newTag := strings.ReplaceAll(val, "`", "")
+					f.Tag.Value = fmt.Sprintf("`%s %s`", originTag, newTag)
+				} else {
+					f.Tag.Value = val
+				}
 				v.changed = true
 			}
 		}

@@ -9,7 +9,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/natefinch/graffiti/tags"
+	"github.com/chucongqing/graffiti/tags"
 )
 
 func main() {
@@ -22,7 +22,7 @@ func makeCmd() *cobra.Command {
 	base := &cobra.Command{
 		Use:   "graffiti",
 		Short: "generate struct tags",
-		Long:  "Graffiti generates struct tags for your go code.",
+		Long:  "H1! Graffiti generates struct tags for your go code.",
 	}
 
 	// Order here determines order in help output.
@@ -39,16 +39,17 @@ func genCmd() *cobra.Command {
 		Long:  genUsage,
 	}
 	var types, mapping string
-	var isTempl, dryRun bool
+	var isTempl, dryRun, appendMod bool
 	cmd.Flags().StringVarP(&types, "types", "t", "", "Generate tags only for these types (comma separated list).")
 	cmd.Flags().StringVarP(&mapping, "map", "m", "", "Map field names to alternate tag names (see help mappings).")
 	cmd.Flags().BoolVarP(&isTempl, "format", "f", false, "If set, tags is a go template (see help templates).")
 	cmd.Flags().BoolVarP(&dryRun, "dryrun", "d", false, "If set, changes are written to stdout instead of to the files.")
+	cmd.Flags().BoolVarP(&appendMod, "appendtags", "a", false, "If set, keep existed tags and append new.")
 
 	addtopics(cmd)
 
 	cmd.Run = func(cmd *cobra.Command, args []string) {
-		opt, err := makeOptions(types, mapping, isTempl, dryRun, args)
+		opt, err := makeOptions(types, mapping, isTempl, dryRun, appendMod, args)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(-1)
@@ -62,13 +63,13 @@ func genCmd() *cobra.Command {
 	return cmd
 }
 
-func makeOptions(types, mapping string, isTempl, dryRun bool, args []string) (tags.Options, error) {
+func makeOptions(types, mapping string, isTempl, dryRun, appendMod bool, args []string) (tags.Options, error) {
 	// Tags is required, target is optional
 	if len(args) != 2 && len(args) != 1 {
 		return tags.Options{}, fmt.Errorf("Wrong number of arguments, expected 1 or 2, got %d", len(args))
 	}
 
-	opt := tags.Options{DryRun: dryRun}
+	opt := tags.Options{DryRun: dryRun, AppendMod: appendMod}
 
 	if len(args) > 1 {
 		opt.Target = args[1]
