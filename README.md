@@ -15,6 +15,7 @@ Available Flags:
   -f, --format		If set, tags is a go template (see help templates).
   -m, --map=""		Map field names to alternate tag names (see help mappings).
   -t, --types=""	Generate tags only for these types (comma separated list).
+  -a, --appedtags	If set, will append tag after existed one. 
 ```
 
 If no target is given, all go files in the current directory are processed. By
